@@ -1,0 +1,479 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Bookmarks Search Manager | BlackSheep</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Luke06122463">
+    
+    <meta name="description" content="IntroductionOne side, I love chrome’s bookmark because it’s so convenient to manage all the web resource I cherished. But on the other side, I can’t h">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/xiaoen.png">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo" style="margin-left:50px">
+				<a href="/" style="margin-top:10px"><img src="/img/xiaoen.png" alt="BlackSheep" title="BlackSheep"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="BlackSheep">BlackSheep</a></h1>
+				<h2 class="blog-motto">Let every blog records your growth</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Articles</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/08/13/bsm-introduction/" title="Bookmarks Search Manager" itemprop="url">Bookmarks Search Manager</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://yoursite.com" title="Luke06122463">Luke06122463</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2015-08-13T15:33:52.000Z" itemprop="datePublished">2015-08-13</time>
+    更新日期:<time datetime="2015-08-13T15:40:18.000Z" itemprop="dateModified">2015-08-13</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-number">1.</span> <span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Where_the_idea_come_from?"><span class="toc-number">2.</span> <span class="toc-text">Where the idea come from?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Architecture"><span class="toc-number">3.</span> <span class="toc-text">Architecture</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Detail_Design"><span class="toc-number">4.</span> <span class="toc-text">Detail Design</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Detail_Design_for_Front_End"><span class="toc-number">4.1.</span> <span class="toc-text">Detail Design for Front End</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Detail_Design_for_Web_Service"><span class="toc-number">4.2.</span> <span class="toc-text">Detail Design for Web Service</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Detail_Design_for_Web_API"><span class="toc-number">4.3.</span> <span class="toc-text">Detail Design for Web API</span></a></li></ol></li></ol>
+		</div>
+		
+		<h2 id="Introduction">Introduction</h2><p>One side, I love chrome’s bookmark because it’s so convenient to manage all the web resource I cherished. But on the other side, I can’t help complaining its simplicity. Here is what bother me most:</p>
+<ul>
+<li><p>With several year’s accumulation, it becomes extremely hard to find what I want from such a messy url collection. How many times I have to go through each of bookmark folders to find the target. What was worse, it’s  very likely you have no idea to your bookmark until you open the url and see the resource.</p>
+</li>
+<li><p>Considering the network condition of China, it’s a great pain to re-open the bookmark since some request is hard to retrieve back, especially those resource whose server is outside of mainland.  Re-opening bookmark is time-consuming.</p>
+</li>
+<li><p>You have no idea when your bookmark is no longer available. Maybe author deletes their article or maybe the website is blocked according to some policy.</p>
+</li>
+<li><p>Since chrome has been driven out of China, we can’t sync its bookmarks between different platform. I always worry about one day I may loss all of my bookmarks since it’s not portable.</p>
+</li>
+</ul>
+<p>All in all, chrome’s bookmarks can’t fully support my requirement. So I decide to maintain and extend the bookmarks all by myself.</p>
+<p>In order to maintain bookmark and achieve the functionality that I ask for, I plan to design and implement ‘Bookmark Search Manager’ project. Let’s call it ‘BSM’ for short. </p>
+<p>Here is brief list of its features. </p>
+<ul>
+<li><p>Manage bookmarks by user</p>
+<blockquote>
+<p>BSM is basing on membership. User need to register as its member at first and all the  functionality are not available until he has logged in.</p>
+</blockquote>
+</li>
+<li><p>Branch-based management</p>
+<blockquote>
+<p>User can create/update bookmark repository by uploading chrome’s bookmark to BSM. Each update will only merge the diff to the branch and all the commit will be recorded so that it’s possible for user to switch to any version he wants. Actually, we call it go forward and back mechanism just as browser’s go back/forward button.</p>
+</blockquote>
+</li>
+<li><p>Offline bookmarks</p>
+<blockquote>
+<p>BSM will do crawling for each of the bookmark automatically so that user can access the resource behind the bookmark offline without being scared of resource unavailable.</p>
+</blockquote>
+</li>
+<li><p>Show summary for bookmark</p>
+<blockquote>
+<p>User can add summary for each of bookmark and BSM will show title and summary of bookmark to user. This will help user have a better understanding of the resource and focus on what they are truly interested in.</p>
+</blockquote>
+</li>
+<li><p>Filter bookmarks by its organization</p>
+<blockquote>
+<p>Currently, chrome’s bookmark is organized by folder.  So it’s reasonable to provide a folder-based filter mechanism that user can choose a folder to see the bookmark under that folder. Maybe we can provide multiple selection.</p>
+</blockquote>
+</li>
+<li><p><strong>Provide search functionality for bookmark</strong></p>
+<blockquote>
+<p>Ideally, I want to provide search functionality for the whole website. User can search the specific bookmark according to the keywords he inputs.</p>
+</blockquote>
+</li>
+<li><p>Support for multiple bookmarks</p>
+</li>
+</ul>
+<h2 id="Where_the_idea_come_from?">Where the idea come from?</h2><p>cTo be frank, a well constructed bookmark manager is really something that I desired but it doesn’t worth my so much leisure time to solve such kind of a simple bothering.</p>
+<p>Two years has past since I graduated from college. In my past two years, I learned a lot of new technologies, including: ruby on rails, restful api, elasticsearch, angularjs, dojo, easyui.</p>
+<p>I’m always wondering do I really make any progress? do I fully understand those technologies? their usage? the mechanism behind them? are they still separated technologies for me or I can consider them as an integrated solution? With those confusion, I decide to take some action and do something with those new skill.</p>
+<h2 id="Architecture">Architecture</h2><p>Here is the architecture for Bookmark Search Manager</p>
+<ul>
+<li><p>Front-end: AngularJS + Bootstrap</p>
+<blockquote>
+<p>BSM is a single page application. </p>
+</blockquote>
+</li>
+<li><p>Web Server: ruby on rails</p>
+<blockquote>
+<p>Currently, I adopt webrick as BSM’s web server</p>
+</blockquote>
+</li>
+<li><p>Web API: Grape</p>
+</li>
+<li><p>Database: ElasticSearch</p>
+<blockquote>
+<p>I use ElasticSearch to replace DB.</p>
+</blockquote>
+</li>
+<li><p>Index Engine: Tika + ElastiSearch</p>
+<blockquote>
+<p>when and how to index resource is not decided yet</p>
+</blockquote>
+</li>
+</ul>
+<p>If everything goes well, I’d like to rebuild BSM with the technologies that I’m fond of.</p>
+<ul>
+<li><p>Front-end: AngularJS + Bootstrap</p>
+<blockquote>
+<p>BSM is a single page application. </p>
+</blockquote>
+</li>
+<li><p>Web Server: Nodejs + Express</p>
+</li>
+<li><p>Database: MongoDB</p>
+</li>
+<li><p>Index Engine: Tika + ElastiSearch</p>
+<blockquote>
+<p>when and how to index resource is not decided yet</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="Detail_Design">Detail Design</h2><h3 id="Detail_Design_for_Front_End">Detail Design for Front End</h3><p>GUI should contains the following page:</p>
+<ul>
+<li><p>Login</p>
+<blockquote>
+<p>User can log in</p>
+</blockquote>
+</li>
+<li><p>Dashboard</p>
+<blockquote>
+<p>User can see all the bookmarks on this page</p>
+<p>User can filter the bookmarks</p>
+<p>User can add summary for bookmark</p>
+<p>User can preview bookmark</p>
+</blockquote>
+</li>
+<li><p>Search</p>
+<blockquote>
+<p>User can search specific markbooks by keywords</p>
+</blockquote>
+</li>
+<li><p>Config</p>
+<blockquote>
+<p>User can create new repository</p>
+<p>User can update the repository</p>
+<p>User can view the commit history</p>
+<p>User can switch branch</p>
+</blockquote>
+</li>
+</ul>
+<p>CUI should contains the following modules (I have implemented them in my daily work):</p>
+<ul>
+<li><p>Authorization (access controll)</p>
+</li>
+<li><p>Browser Check</p>
+</li>
+<li><p>Localization (i18n/L10)</p>
+</li>
+<li><p>Route control</p>
+</li>
+<li><p>Error Handling</p>
+</li>
+</ul>
+<h3 id="Detail_Design_for_Web_Service">Detail Design for Web Service</h3><p>Web Service should contains four controllers:</p>
+<ul>
+<li><p>Application_Controller</p>
+<blockquote>
+<p>Check for authentication and session timeout</p>
+</blockquote>
+</li>
+<li><p>Auth_Controller</p>
+<blockquote>
+<p>Responsible for authentication</p>
+</blockquote>
+</li>
+<li><p>Bookmark_Controller</p>
+<blockquote>
+<p>Serve for dashboard page</p>
+</blockquote>
+</li>
+<li><p>Config_Controller</p>
+<blockquote>
+<p>Serve for config page</p>
+</blockquote>
+</li>
+<li><p>Search_Controller</p>
+<blockquote>
+<p>Serve for search page</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="Detail_Design_for_Web_API">Detail Design for Web API</h3>  
+	</div>
+		<footer class="article-footer clearfix">
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Bookmark-Search/">Bookmark Search</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2015/08/13/bsm-introduction/" data-title="Bookmarks Search Manager | BlackSheep" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2015/08/08/hex-to-unicode/"  title="Hex to unicode">
+ <strong>NEXT:</strong><br/> 
+ <span>Hex to unicode
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-number">1.</span> <span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Where_the_idea_come_from?"><span class="toc-number">2.</span> <span class="toc-text">Where the idea come from?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Architecture"><span class="toc-number">3.</span> <span class="toc-text">Architecture</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Detail_Design"><span class="toc-number">4.</span> <span class="toc-text">Detail Design</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Detail_Design_for_Front_End"><span class="toc-number">4.1.</span> <span class="toc-text">Detail Design for Front End</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Detail_Design_for_Web_Service"><span class="toc-number">4.2.</span> <span class="toc-text">Detail Design for Web Service</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Detail_Design_for_Web_API"><span class="toc-number">4.3.</span> <span class="toc-text">Detail Design for Web API</span></a></li></ol></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+  <div class="archiveslist">
+    <p class="asidetitle"><a href="/archives">归档</a></p>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">6</span></li></ul>
+  </div>
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/BlackSheep/" title="BlackSheep">BlackSheep<sup>1</sup></a></li>
+		
+			<li><a href="/categories/Bookmark-Search/" title="Bookmark Search">Bookmark Search<sup>1</sup></a></li>
+		
+			<li><a href="/categories/Python/" title="Python">Python<sup>1</sup></a></li>
+		
+			<li><a href="/categories/RubyOnRails/" title="RubyOnRails">RubyOnRails<sup>3</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+
+  <div class="categorieslist">
+	<h3 class="asidetitle">友情链接</h3>
+	<ul class="entry">
+		<li><img src="/img/github_icon.png" class="link_icon"/><a href="https://github.com/luke06122463/" title="luke's github">&nbsp My Github</a></li>
+		<li><img src="/img/linkedin_icon.png" class="link_icon"/><a href="https://www.linkedin.com/in/luke06122463" title="luke's linkedin">&nbsp My Linkedin</a></li>
+	</ul>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
+		
+		<a href="http://yoursite.com" target="_blank" title="Luke06122463">Luke06122463</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+
+<div id="totop" style="position:fixed;bottom:150px;right:50px;cursor: pointer;">
+<a title="back to top"><img src="/img/scrollup.png"/></a>
+</div>
+<script src="/js/totop.js"></script>
+
+
+  </body>
+</html>
