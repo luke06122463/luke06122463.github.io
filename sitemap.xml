@@ -2,8 +2,18 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2015/08/15/login-module-for-bsm/</loc>
+    <lastmod>2015-08-15T16:03:52.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2015/08/13/bsm-introduction/</loc>
-    <lastmod>2015-08-13T15:40:18.000Z</lastmod>
+    <lastmod>2015-08-15T16:02:59.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2015/08/15/bookmark-creation-for-bsm/</loc>
+    <lastmod>2015-08-15T16:02:27.000Z</lastmod>
   </url>
   
   <url>
