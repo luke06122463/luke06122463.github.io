@@ -49,10 +49,10 @@
     <link href="http://yoursite.com/2015/08/15/login-module-for-bsm/"/>
     <id>http://yoursite.com/2015/08/15/login-module-for-bsm/</id>
     <published>2015-08-15T15:01:50.000Z</published>
-    <updated>2015-08-15T16:03:52.000Z</updated>
+    <updated>2015-08-16T15:56:46.000Z</updated>
     <content type="html"><![CDATA[<p>Since BSM will manage the bookmarks collection based on user which means different users could only see their own bookmarks, I need to design and implement the login mechanism for BSM.</p>
 <a id="more"></a>
-<h2 id="Login_mechanism">Login mechanism</h2><p>From my point of view, a completed login mechanism should contains four parts:</p>
+<h2 id="Login_mechanism">Login mechanism</h2><p>From my point of view, a completed login mechanism should contains following parts:</p>
 <ol>
 <li><p>Authentication.</p>
 <blockquote>
@@ -61,7 +61,7 @@
 </li>
 <li><p>Authorization.</p>
 <blockquote>
-<p>Web resource is only available to the user who has the corresponding permission. If anyone try to access some resource that isn’t available for him, BSM will deny his request even he is a qualified user.</p>
+<p>Web resource is only available to the user who has the corresponding permission. If anyone try to access some resource that isn’t available for him, BSM will deny his request even he is a qualified user even he has logged in.</p>
 </blockquote>
 </li>
 <li><p>User information and User preference</p>
@@ -71,11 +71,84 @@
 </li>
 <li><p>Route Control</p>
 </li>
+<li><p>Session timeout</p>
+</li>
 </ol>
-<p>Before we keep going on, let’s catch a glimpse of what the login page looks like:<br><img src="/img/bsm/login_001.png" alt="Alt text" title="pic_01"></p>
-<p>When user passes the validation, then he will see the following page:<br><img src="/img/bsm/login_002.png" alt="Alt text" title="pic_02"></p>
+<p>Before we keep going on, I’d like show you how my login page looks like:<br><img src="/img/bsm/login_001.png" alt="Alt text"></p>
+<p>When user passes the validation, then he will see the following page:<br><img src="/img/bsm/login_002.png" alt="Alt text"></p>
 <p>Now, let me introduce how I implement the login mechanism in BSM project.</p>
-<h3 id="Authentication">Authentication</h3>]]></content>
+<h3 id="Authentication">Authentication</h3><p>The essence of authentication is to confirm whether the user is qualified. With some investigation, I conclude all the scenarios into three approaches:</p>
+<ul>
+<li>User starts his travel from the login page firstly.</li>
+<li>User try to access some resource directly without logging in first.</li>
+<li>User refresh the current resource but he may be not the member any more at that time.</li>
+</ul>
+<p>For the first situation, we can prepare a login page so that user can have a chance to claim himself.</p>
+<p>For the other situation, we need to check whether the session is active. If the session is empty, then we will direct the user to login page for he has not logged in yet.</p>
+<h4 id="Login_module">Login module</h4><p>There are only two things we need to do for achieving the login module, a login page and implementing the functionality behind the page. </p>
+<p>Login page is first thing that our user will see when they try to access our product. Usually, the first sight will influence people a lot on their judgement about the thing they saw. So I try to make my login page attractive as much as possible.</p>
+<p>In BSM I adopt flat-ui as my first choice for style sheets, here is how my login page looks like:<br><img src="/img/bsm/login_001.png" alt="Alt text"></p>
+<p>Also attach its implementation:<br><img src="/img/bsm/code_001.png" alt="Alt text"></p>
+<p>Now we need to implement remaining part step by step.</p>
+<h4 id="Implement_authentication_in_the_backend">Implement authentication in the backend</h4><blockquote>
+<p>Because time is limited, I simplify the authentication by directly query the target user from mongodb’s users collection by the account the user inputs in login page. If the query result is not empty, then the user is a qualified member.<br><img src="/img/bsm/code_002_1.png" alt="Alt text"><br><img src="/img/bsm/code_002_2.png" alt="Alt text"></p>
+<p>When user passes the authentication, his personal information and login information will be store into session.</p>
+</blockquote>
+<h4 id="Create_loginService_to_serve_for_user_login-">Create loginService to serve for user login.</h4><p><img src="/img/bsm/code_003.png" alt="Alt text"></p>
+<blockquote>
+<p><code>urlObj</code> in <code>var login = function(username, password)</code> points to <code>AuthController#prologin</code></p>
+<p>Now all the authentication-related request will be sent by loginService.</p>
+</blockquote>
+<h4 id="Create_loginController_to_serve_for_user_login">Create loginController to serve for user login</h4><blockquote>
+<p>Here is loginController’s core code:<br><img src="/img/bsm/code_004.png" alt="Alt text"></p>
+<p>When user click the ‘sign in’ button on the login page, <code>handleLoginBtn</code> in loginController will be triggered. It will ask the loginService to send a login request to authenticate when user account is correct. </p>
+<p>If user logs in successfully, the callback function <code>handleLoginSuccess</code> will take out user’s profile from the request and store them in the userService which is designed for setting and getting all kinds of user’s information, including profile, preference, permissions, environment(timezone .etc). At last, <code>handleLoginSuccess</code> will broadcast <code>AUTH_EVENTS.LOGIN_SUCCESS</code> to inform other module that authentication has passed.</p>
+</blockquote>
+<h4 id="Connect_the_loginController_with_login_page">Connect the loginController with login page</h4><h3 id="Authorization">Authorization</h3><p>Authorization in js side contains at least two layers of meaning, whether user is qualifed and whether qualified user has the permission to the resource he is asking for.</p>
+<p>So for each request, we will check whether he has logged in or not. If not, user will be redirected to login page. For any qualifed user, we need to check whether he has the corresponding permission. If not, redirect him to login page.</p>
+<p>Here is the design for the workflow:</p>
+<ol>
+<li><p>If user wants to visit login/register page, then simply open the resource for him.</p>
+</li>
+<li><p>If user wants to visit other resource, then check whether he has logged in.</p>
+</li>
+</ol>
+<ul>
+<li>If not, then redirect him to login page</li>
+<li>If user has logged in, then check his permission</li>
+</ul>
+<p>But the final implementation is a little different from the original design:</p>
+<ol>
+<li><p>If user wants to visit login/register page, then simply open the resource for him.</p>
+</li>
+<li><p>If user wants to visit other resource, then check whether userService is empty and session is active. When user logged in, the userService will be filled with user’s profile which means if userService is not empty, user must have logged in. When user logged in, the session will be filled with some identity which means if session is still active, user must have logged in. The difference between userService and Session is the former is in JS side and the latter is in Server side. So we will check the former before ask for the session.</p>
+</li>
+</ol>
+<ul>
+<li>If userService is not empty, then check user’s permission to decide which page will be directed? login page or other resource?</li>
+<li>If userService is empty, then check user’s session. If it is active, then check user’s permission.</li>
+<li>If userService is empty, so is session, then simply redirect the user to login page<br><em>When user logged in then refresh the page or open a new tag, then userService is empty while the session is still active</em></li>
+</ul>
+<ol>
+<li>If user has logged in, then check whether he has the permission to access the resource</li>
+</ol>
+<ul>
+<li>If permission deny, then simply redirect the user to login page</li>
+<li>If permission allow but userService is empty, then retrieve user’s profile back to userService and return the resource to user.</li>
+<li>If permission allow and userService is not empty, then return the resource to user.</li>
+</ul>
+<p>In order to intercept each request, I listen for <code>RouteChangeStart</code> event. In this event, I will check whether userService is empty before any request go further.<br><img src="/img/bsm/code_005.png" alt="Alt text"></p>
+<p>If userService is empty, then event <code>AUTH_EVENTS.USER_AUTHENTICATION</code> will be broadcasted which will sent an request to backend to check whether the session is active and return user’s profile if session is proved still active.<br><img src="/img/bsm/code_006.png" alt="Alt text"></p>
+<p>If everything goes well, then the user’s profile will be set into userService and event <code>AUTH_EVENTS.LOGIN_SUCCESS</code> will be broadcasted.</p>
+<h3 id="User_information_and_User_preference">User information and User preference</h3><p>Use userService to intialize the welcome page for more user friendly. More detail please see annotation.<br><img src="/img/bsm/code_007.png" alt="Alt text"></p>
+<h3 id="Route_Control">Route Control</h3><p>Before authentication/authorization, we need to write down where user wants to go so that we can redirect him to his destination. </p>
+<p>When routeChangeStart broadcasts event <code>AUTH_EVENTS.USER_AUTHENTICATION</code>, the original path will be sent along with the event. So I store it into LocationService.</p>
+<p>If authentication/authorization failed, then user will be simply redirected to login page.</p>
+<p>If not, <code>locationService.pathToTargetLocation();$route.reload();</code> will redirect the user to his destination.</p>
+<h3 id="Session_timeout">Session timeout</h3><p>Backend will check whether session has been timed out, whether session is from the same IP, whether session is from the same browser, etc, for each request.<br><img src="/img/bsm/code_008.png" alt="Alt text"></p>
+<p>If session is proved invalid, then response with 401 will be return, then an relogin dialog will be prompt to ask user to log in again to activate his session.</p>
+<p>Finally, you will see the welcome page.<br><img src="/img/bsm/login_002.png" alt="Alt text"></p>
+]]></content>
     <summary type="html">
     <![CDATA[<p>Since BSM will manage the bookmarks collection based on user which means different users could only see their own bookmarks, I need to design and implement the login mechanism for BSM.</p>]]>
     
@@ -348,7 +421,7 @@
     <link href="http://yoursite.com/2015/08/06/Python%E7%9A%84%E7%B1%BB%E6%9C%BA%E5%88%B6/"/>
     <id>http://yoursite.com/2015/08/06/Python的类机制/</id>
     <published>2015-08-06T14:20:09.000Z</published>
-    <updated>2015-08-13T15:31:09.000Z</updated>
+    <updated>2015-08-15T16:08:28.000Z</updated>
     <content type="html"><![CDATA[<h2 id="初识Python类机制">初识Python类机制</h2><p>首先参照图(pic_01):<br><img src="/img/python/class_object_001.png" alt="Alt text" title="pic_01"></p>
 <p>我们可知Python在类机制的实现中引入了两个很纠结的概念：PyTypeObject和基类，从而引出了Class与Instance以及基类和子类的概念。</p>
 <p>原以为这两个概念并不存在太大的区别，可在逐步了解Python的对象机制的过程中，我发现两者相辅相成，相互交织却在功能划分上又泾渭分明。</p>
@@ -360,7 +433,7 @@
 </ol>
 <p>其中，Class对象对应了上图（pic_01）中的中间部分，Instance对象对应最右边，而在最左边还有一个 <code>&lt;type, &#39;type&#39;&gt;</code> 对象，该对象在创建Class对象的过程中起了至关重要的作用。所以图(pic_01)更多地向我们展示了类机制的<code>is-instance-of</code>关系，即instance是怎么一步步创建出来的。我觉得这很重要，它帮助我们理清了Python类机制的层次关系，解答了Python中的先有鸡还是先有蛋的问题。通过这样的叙述关系，我们知道了Instance对象是怎么来的，同样地，我们也弄清楚了负责创建Instance的Class对象又是怎么被创建。这对于我们了解Python的类机制怎么从无到有以及将Class与Instance的关系抽象出来并与其他语言的类概念联系起来，都非常有帮助。</p>
 <p>但上面的描述不够具体，忽略了很多的实现细节。要想从根本上理解Python的对象机制，我们不仅要从设计上理解各个概念之间的关系，并且我们还需要从实现上窥视所谓的类和对象的本质。换种说法就是怎样用其他语言来实现Python的类机制。</p>
-<h2 id="探究类机制的本质">探究类机制的本质</h2><p>简单的说，Instance对象就是一堆数据以及围绕这些数据进行操作的一组方法的集合。在类机制里面，我们称数据之为成员变量，称围绕这些数据进行操作的方法为成员方法。</p>
+<h2 id="类机制的实现">类机制的实现</h2><p>简单的说，Instance对象就是一堆数据以及围绕这些数据进行操作的一组方法的集合。在类机制里面，我们称数据之为成员变量，称围绕这些数据进行操作的方法为成员方法。</p>
 <h3 id="C++中的实现">C++中的实现</h3><p>在C++中，Instance对象无非就是一段固定的内存和一堆指令码的集合。内存用于存放数据，指令码用于操作内存中的数据以及一些逻辑操作。</p>
 <p>在C++的世界里，Class仅仅是Instance的模板，它仅仅定义了Instance应该是什么样子的，有哪些成员变量，有哪些成员方法。这样纯粹的说明是不需要使用内存的（为了简化问题，这里不考虑static成员变量，话说static存放的内存空间也跟成员变量不一样=.=!!），所以在C++中，Class仅仅是一堆指令码的集合（指令码会从硬盘读取到内存，但因为概念不一样，所以区别于一般的存放程序数据的内存）。而Instance就不一样了，在Class的new函数（也是一堆指令码&gt;.&lt;）的指挥下开始申请内存然后初始化成员变量，并且通过函数指针使用Class中定义的成员方法来操作内存中的成员变量。</p>
 <p>总结一下就是，在C++的实现中：</p>
@@ -372,37 +445,21 @@
 <p>脑洞大开一下，我再补充个观点，未得到验证所以不见得对，请大家绕道。</p>
 <p>由于C++是对C的补充和扩展，所以它的实现也是依托于C。但是C本身是面向过程的语言，只有function和variable。套用我先前所提到的逻辑，<em>Instance是一段固定的内存和一堆指令码的集合</em>，慢着，怎么这么耳熟，这不就是variable（一段固定的内存）+ function（一堆指令码）的组合嘛！但是variable不能提前定义啊，否则它的内存地址就确定下来了，并且不同的Instance应该拥有属于自己的variable集合，这样的动态分配是Instance本身所不具备的功能，需要在更高层完成；同样地，我们不能重复定义function，所有的Instance应该share相同的function集合，再加上继承、共私有机制的引进，Instance本身无法实现这样的需求，同样需要在更高层完成。所以这时候我们需要Class来完成这些工作。Class通过new函数来为新创建的Instance申请空间，并在申请到的空间中申明variable；紧接着variable，Class会在之后的内存中存放Instance需要的函数所对应的函数指针。每个函数会根据所分配的首地址以及成员变量的地址偏移来得到variable并对其操作。大概这样就能实现了吧，么么哒~</p>
 </blockquote>
-<h3 id="Python中的实现">Python中的实现</h3><p>Python作为更高层的抽象，其关注点已经脱离了C++的如何实现类机制，而是更多地focus在如何构建一个更加彻底更加灵活的对象世界。不过反过来说，也正是因为C++已经实现了类机制或在说C++已经屏蔽了类的实现，所以Python（C-Python）可以把更多的精力花在对象的设计上。</p>
-<p>但由于Python最终还是需要通过C++来实现自己的对象机制，所以我理解中的Python对象机制应该有两层：</p>
-<blockquote>
-<ol>
-<li><p>对象结构的定义。这里的定义主要是指C++的类定义。Python对象的本质是C++对象，所以我们事先需要为这些对象定义类。</p>
-</li>
-<li><p>python对象机制的实现。包括预先定义的<code>PyTypeObject</code>、基类和其他一些在虚拟机初始化之时就已经存在了的对象，以及python对象怎么创建、如何自定义python的class等等。</p>
-</li>
-</ol>
-</blockquote>
-<p>正因为Python不是凭空出世，它的实现是建立在C++上，所以我们要遵守C++的规则，先定义class再创建对象。这一部分的内容仍然属于C++数据机构的范畴，所以在概念上我们一般不把它纳入Python的对象机制的实现中，但我们需要明白的是，这才是python对象机制实现的基础，没有这些数据结构的定义，python何从谈起。当然以后如果我们在python的基础上构建其他的语言，到那个时候，python会为新语言屏蔽对象机制的实现，让后者可以聚焦更抽象更高级的层次。</p>
-<p>当Python虚拟机启动的时候，Python会根据之前定义的数据结构去创建C++对象，而所创建的这些便是Python的基石–<code>PyTypeObject</code>，至此我们总算引出了Python的对象机制了。Python中的所有的这些<code>PyTypeObject</code>都是实实在在的C++对象，有分配给它的内存空间用于存放该类型的对象的metadata；有定义给他的函数方法，用于创建Python实例以及继承给Python实例使用的方法。如果用面向对象的思维去审视这些<code>PyTypeObject</code>，那么他们应该是Python世界里面的类。而Python也会用<code>PyTypeObject</code>中方法去创建Python实例，给他们分配内存空间用于存放真正的数据，同时也会把方法继承给Python实例，这样这些Python实例就具有对象的一切功能了。</p>
-<p>现在应该明白了为什么说Python的世界里面都是对象：<strong>PyTypeObject和Python实例都是实实在在的C++对象</strong>。</p>
-<h2 id="Python对象机制的实现">Python对象机制的实现</h2><p><strong>为了更贴近Python的语言风格，在接下来的描述中，如果涉及到概念，我将延续先前使用的Class&amp;Instance这样的术语，但在涉及到Python的具体实现中我将会</strong></p>
+<h3 id="Python中的实现">Python中的实现</h3><p>至于基类的继承，更多地是属性的重用，所以图(pic_01)并未很好地展现继承的层次关系。</p>
+<p>以上是我对<code>is-instance-of</code>以及<code>is-kind-of</code>的初步理解。接下来，我将通过对Class对象以及instance对象创建过程的剖析来探究PyTypeObject。不可避免地，我们会涉及到类的继承，因为它们本来就都是整个Class对象的一部分。</p>
+<p>图(pic_01)很好地展示了Python的类机制的层次关系，即<code>metaclass</code>负责创建其他的class对象，而这些被创建的class对象负责创建instance对象，所以也就出现了两层<code>is-instance-of</code>关系。也正是因为存在这两层的<br><code>is-instance-of</code>，class对象和instance对象才能从无到有。我在阅读《Python源码剖析》的过程中，不曾看到哪个PyTypeObject的ob_type所指向的非<code>metaclass</code>，这样的机制极大地简化了Python的类机制，易于理解也易于实现。</p>
+<p><strong>为了更贴近Python的语言风格，在接下来的描述中，如果涉及到概念，我将延续先前使用的Class&amp;Instance这样的术语，但在涉及到Python的具体实现中我将会</strong></p>
 <ol>
 <li>用<code>PyTypeObject</code>来表示Class对象</li>
 <li>用<code>PyObject实例</code>来表示Instance对象</li>
 <li>用<code>PyObject</code>来泛指Python的所有对象（everything in python is a object）</li>
 <li>用<code>PyBaseObject_Type</code>来表示所有Python最基本的Class对象，所有的<code>PyObject</code>均继承自它。原型为<code>&lt;type, &#39;object&#39;&gt;</code></li>
 </ol>
-<p>由于一切的Python都是对象，所以对于对象（<code>PyTypeObject</code>）创建对象（<code>PyObject实例</code>）的理解，我更习惯于用方法继承的关系来解释两类对象之间的关系，即<code>PyObject实例</code>继承自<code>PyTypeObject</code>。</p>
-<p>让我们切换回面向对象的思维方式，用类（<code>PyTypeObject</code>）和对象（<code>PyObject实例</code>）的逻辑来接着探究Python的世界。</p>
-<p>Python对象会继承基类的方法，而所谓的继承，实则上更多地是属性的重用，所以图(pic_01)并未很好地展现继承的层次关系。</p>
-<p>接下来，我将通过对Class对象以及instance对象创建过程的剖析来探究PyTypeObject。不可避免地，我们会涉及到类的继承，因为它们本来就都是整个Class对象的一部分。</p>
-<p>图(pic_01)很好地展示了Python的类机制的层次关系，即<code>metaclass</code>负责创建其他的class对象，而这些被创建的class对象负责创建instance对象，所以也就出现了两层<code>is-instance-of</code>关系。也正是因为存在这两层的<br><code>is-instance-of</code>，class对象和instance对象才能从无到有。我在阅读《Python源码剖析》的过程中，不曾看到哪个PyTypeObject的ob_type所指向的非<code>metaclass</code>，这样的机制极大地简化了Python的类机制，易于理解也易于实现。</p>
-<h3 id="PyObject实例的创建"><code>PyObject实例</code>的创建</h3><p>为了更好地展示如何通过<code>PyTypeObject</code>来创建<code>PyObject实例</code>，我在这里展示另外一张图(pic_02):<br><img src="/img/python/class_object_002.png" alt="Alt text" title="pic_02"></p>
+<p>为了更好地展示如何通过<code>PyTypeObject</code>来创建<code>PyObject实例</code>，我在这里展示另外一张图(pic_02):<br><img src="/img/python/class_object_002.png" alt="Alt text" title="pic_02"></p>
 <p>标上序号的虚线箭头代表了创建整数对象的函数调用流程，可以概括为：首先<code>PyTypeObject</code>(在这里即为<code>PyInt_type</code>)的tp_new会被调用，该函数可以视为new操作符（为instance对象申请内存空间以及初始化工作），若tp_new为NULL，<code>PyTypeObject</code>对象会去寻找基类(<code>PyBaseObject_Type</code>)的tp_new函数。因为所有的<code>PyObject</code>都继承自<code>PyBaseObject_Type</code>，而<code>PyBaseObject_Type</code>的tp_new的实现不为NULL，所以任何<code>PyObject</code>总能找到tp_new函数来完成用<code>PyObject实例</code>的创建。在具体的实现中，tp_new函数会访问<code>PyTypeObject</code>的tp_basicsize来确定要申请的空间大小；当空间申请结束之后，tp_new会调用tp_init函数来完成初始化工作。</p>
 <p>Python的对象创建机制比较复杂，但工作原理却相当明朗，即Class对象调用自身的tp_new，赋以自身的一些必要属性作为参数，来为Instance对象分配内存和初始化工作。所以才有我先前的结论：Python是由Class对象（<code>PyTypeObject</code>）来负责对象的实例化，其中，我们看到某一Class对象的tp_new的具体实现可以不是由自身给出，而是顺藤摸瓜，通过一系列的函数指针的传递和函数调用来确定最终的函数实现。</p>
-<p>在这里我们可以看到继承的运用。继承更多地是关注子类继承父类的属性，即我们的最终目的是子类的功能更加丰富，基类更多的是为了这个目的服务。所以在创建实例时，我们并未与某一Class对象的基类打交道，发生关系的主体还是Class对象，只不过通过继承这种方式可以共享一些公用的方法，所以<code>&lt;type, &#39;object&#39;&gt;</code>便是所有类的公有方法的集合。具体的实现方法也相当简单，只需要在Python的每个<code>PyTypeObject</code>中保有指向基类的指针，然后通过统一的接口调用基类的方法，而该方法本身又将使用调用者本身的属性，实现多态。当然现实中并不一定会实现地这么简陋，Python很干脆地打了我的脸：Python采用了另外一种方式，即使用dict对象来存储&lt;’函数名’，’函数地址’&gt;，所以他可以通过函数名字来调用相对应的函数，包括基类的方法，只要在填充dict对象时，将基类的方法填充进去，使得基类的方法变成Class对象的方法（方法实现的指令码还在基类中），这样Class对象就可以在自己的方法集合中找到基类的方法，使用自身的metadata来创建实例，而新创建的实例将会指向Class对象的方法集合。有木有觉得有了继承机制之后，Class对象可以搞定一切啊！！！</p>
-<p>当Class对象为<code>PyObject实例</code>分配内存之后，Class对象会调用<code>tp_init</code>来完成实例的初始化，所以<code>tp_init</code>即为构造函数</p>
-<h3 id="PyTypeObject的创建"><code>PyTypeObject</code>的创建</h3>]]></content>
+<p>在这里我们可以看到继承的运用。继承更多地</p>
+]]></content>
     <summary type="html">
     <![CDATA[<h2 id="初识Python类机制">初识Python类机制</h2><p>首先参照图(pic_01):<br><img src="/img/python/class_object_001.png" alt="Alt text" title="pic_01"></p>
 <p>]]>

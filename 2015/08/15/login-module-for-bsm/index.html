@@ -75,7 +75,7 @@
     </p>
   <p class="article-time">
     <time datetime="2015-08-15T15:01:50.000Z" itemprop="datePublished">2015-08-15</time>
-    更新日期:<time datetime="2015-08-15T16:03:52.000Z" itemprop="dateModified">2015-08-16</time>
+    更新日期:<time datetime="2015-08-16T15:56:46.000Z" itemprop="dateModified">2015-08-16</time>
     
   </p>
 </header>
@@ -84,12 +84,12 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Login_mechanism"><span class="toc-number">1.</span> <span class="toc-text">Login mechanism</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Authentication"><span class="toc-number">1.1.</span> <span class="toc-text">Authentication</span></a></li></ol></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Login_mechanism"><span class="toc-number">1.</span> <span class="toc-text">Login mechanism</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Authentication"><span class="toc-number">1.1.</span> <span class="toc-text">Authentication</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Login_module"><span class="toc-number">1.1.1.</span> <span class="toc-text">Login module</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Implement_authentication_in_the_backend"><span class="toc-number">1.1.2.</span> <span class="toc-text">Implement authentication in the backend</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Create_loginService_to_serve_for_user_login-"><span class="toc-number">1.1.3.</span> <span class="toc-text">Create loginService to serve for user login.</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Create_loginController_to_serve_for_user_login"><span class="toc-number">1.1.4.</span> <span class="toc-text">Create loginController to serve for user login</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Connect_the_loginController_with_login_page"><span class="toc-number">1.1.5.</span> <span class="toc-text">Connect the loginController with login page</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Authorization"><span class="toc-number">1.2.</span> <span class="toc-text">Authorization</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#User_information_and_User_preference"><span class="toc-number">1.3.</span> <span class="toc-text">User information and User preference</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Route_Control"><span class="toc-number">1.4.</span> <span class="toc-text">Route Control</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Session_timeout"><span class="toc-number">1.5.</span> <span class="toc-text">Session timeout</span></a></li></ol></li></ol>
 		</div>
 		
 		<p>Since BSM will manage the bookmarks collection based on user which means different users could only see their own bookmarks, I need to design and implement the login mechanism for BSM.</p>
 <a id="more"></a>
-<h2 id="Login_mechanism">Login mechanism</h2><p>From my point of view, a completed login mechanism should contains four parts:</p>
+<h2 id="Login_mechanism">Login mechanism</h2><p>From my point of view, a completed login mechanism should contains following parts:</p>
 <ol>
 <li><p>Authentication.</p>
 <blockquote>
@@ -98,7 +98,7 @@
 </li>
 <li><p>Authorization.</p>
 <blockquote>
-<p>Web resource is only available to the user who has the corresponding permission. If anyone try to access some resource that isn’t available for him, BSM will deny his request even he is a qualified user.</p>
+<p>Web resource is only available to the user who has the corresponding permission. If anyone try to access some resource that isn’t available for him, BSM will deny his request even he is a qualified user even he has logged in.</p>
 </blockquote>
 </li>
 <li><p>User information and User preference</p>
@@ -108,11 +108,84 @@
 </li>
 <li><p>Route Control</p>
 </li>
+<li><p>Session timeout</p>
+</li>
 </ol>
-<p>Before we keep going on, let’s catch a glimpse of what the login page looks like:<br><img src="/img/bsm/login_001.png" alt="Alt text" title="pic_01"></p>
-<p>When user passes the validation, then he will see the following page:<br><img src="/img/bsm/login_002.png" alt="Alt text" title="pic_02"></p>
+<p>Before we keep going on, I’d like show you how my login page looks like:<br><img src="/img/bsm/login_001.png" alt="Alt text"></p>
+<p>When user passes the validation, then he will see the following page:<br><img src="/img/bsm/login_002.png" alt="Alt text"></p>
 <p>Now, let me introduce how I implement the login mechanism in BSM project.</p>
-<h3 id="Authentication">Authentication</h3>  
+<h3 id="Authentication">Authentication</h3><p>The essence of authentication is to confirm whether the user is qualified. With some investigation, I conclude all the scenarios into three approaches:</p>
+<ul>
+<li>User starts his travel from the login page firstly.</li>
+<li>User try to access some resource directly without logging in first.</li>
+<li>User refresh the current resource but he may be not the member any more at that time.</li>
+</ul>
+<p>For the first situation, we can prepare a login page so that user can have a chance to claim himself.</p>
+<p>For the other situation, we need to check whether the session is active. If the session is empty, then we will direct the user to login page for he has not logged in yet.</p>
+<h4 id="Login_module">Login module</h4><p>There are only two things we need to do for achieving the login module, a login page and implementing the functionality behind the page. </p>
+<p>Login page is first thing that our user will see when they try to access our product. Usually, the first sight will influence people a lot on their judgement about the thing they saw. So I try to make my login page attractive as much as possible.</p>
+<p>In BSM I adopt flat-ui as my first choice for style sheets, here is how my login page looks like:<br><img src="/img/bsm/login_001.png" alt="Alt text"></p>
+<p>Also attach its implementation:<br><img src="/img/bsm/code_001.png" alt="Alt text"></p>
+<p>Now we need to implement remaining part step by step.</p>
+<h4 id="Implement_authentication_in_the_backend">Implement authentication in the backend</h4><blockquote>
+<p>Because time is limited, I simplify the authentication by directly query the target user from mongodb’s users collection by the account the user inputs in login page. If the query result is not empty, then the user is a qualified member.<br><img src="/img/bsm/code_002_1.png" alt="Alt text"><br><img src="/img/bsm/code_002_2.png" alt="Alt text"></p>
+<p>When user passes the authentication, his personal information and login information will be store into session.</p>
+</blockquote>
+<h4 id="Create_loginService_to_serve_for_user_login-">Create loginService to serve for user login.</h4><p><img src="/img/bsm/code_003.png" alt="Alt text"></p>
+<blockquote>
+<p><code>urlObj</code> in <code>var login = function(username, password)</code> points to <code>AuthController#prologin</code></p>
+<p>Now all the authentication-related request will be sent by loginService.</p>
+</blockquote>
+<h4 id="Create_loginController_to_serve_for_user_login">Create loginController to serve for user login</h4><blockquote>
+<p>Here is loginController’s core code:<br><img src="/img/bsm/code_004.png" alt="Alt text"></p>
+<p>When user click the ‘sign in’ button on the login page, <code>handleLoginBtn</code> in loginController will be triggered. It will ask the loginService to send a login request to authenticate when user account is correct. </p>
+<p>If user logs in successfully, the callback function <code>handleLoginSuccess</code> will take out user’s profile from the request and store them in the userService which is designed for setting and getting all kinds of user’s information, including profile, preference, permissions, environment(timezone .etc). At last, <code>handleLoginSuccess</code> will broadcast <code>AUTH_EVENTS.LOGIN_SUCCESS</code> to inform other module that authentication has passed.</p>
+</blockquote>
+<h4 id="Connect_the_loginController_with_login_page">Connect the loginController with login page</h4><h3 id="Authorization">Authorization</h3><p>Authorization in js side contains at least two layers of meaning, whether user is qualifed and whether qualified user has the permission to the resource he is asking for.</p>
+<p>So for each request, we will check whether he has logged in or not. If not, user will be redirected to login page. For any qualifed user, we need to check whether he has the corresponding permission. If not, redirect him to login page.</p>
+<p>Here is the design for the workflow:</p>
+<ol>
+<li><p>If user wants to visit login/register page, then simply open the resource for him.</p>
+</li>
+<li><p>If user wants to visit other resource, then check whether he has logged in.</p>
+</li>
+</ol>
+<ul>
+<li>If not, then redirect him to login page</li>
+<li>If user has logged in, then check his permission</li>
+</ul>
+<p>But the final implementation is a little different from the original design:</p>
+<ol>
+<li><p>If user wants to visit login/register page, then simply open the resource for him.</p>
+</li>
+<li><p>If user wants to visit other resource, then check whether userService is empty and session is active. When user logged in, the userService will be filled with user’s profile which means if userService is not empty, user must have logged in. When user logged in, the session will be filled with some identity which means if session is still active, user must have logged in. The difference between userService and Session is the former is in JS side and the latter is in Server side. So we will check the former before ask for the session.</p>
+</li>
+</ol>
+<ul>
+<li>If userService is not empty, then check user’s permission to decide which page will be directed? login page or other resource?</li>
+<li>If userService is empty, then check user’s session. If it is active, then check user’s permission.</li>
+<li>If userService is empty, so is session, then simply redirect the user to login page<br><em>When user logged in then refresh the page or open a new tag, then userService is empty while the session is still active</em></li>
+</ul>
+<ol>
+<li>If user has logged in, then check whether he has the permission to access the resource</li>
+</ol>
+<ul>
+<li>If permission deny, then simply redirect the user to login page</li>
+<li>If permission allow but userService is empty, then retrieve user’s profile back to userService and return the resource to user.</li>
+<li>If permission allow and userService is not empty, then return the resource to user.</li>
+</ul>
+<p>In order to intercept each request, I listen for <code>RouteChangeStart</code> event. In this event, I will check whether userService is empty before any request go further.<br><img src="/img/bsm/code_005.png" alt="Alt text"></p>
+<p>If userService is empty, then event <code>AUTH_EVENTS.USER_AUTHENTICATION</code> will be broadcasted which will sent an request to backend to check whether the session is active and return user’s profile if session is proved still active.<br><img src="/img/bsm/code_006.png" alt="Alt text"></p>
+<p>If everything goes well, then the user’s profile will be set into userService and event <code>AUTH_EVENTS.LOGIN_SUCCESS</code> will be broadcasted.</p>
+<h3 id="User_information_and_User_preference">User information and User preference</h3><p>Use userService to intialize the welcome page for more user friendly. More detail please see annotation.<br><img src="/img/bsm/code_007.png" alt="Alt text"></p>
+<h3 id="Route_Control">Route Control</h3><p>Before authentication/authorization, we need to write down where user wants to go so that we can redirect him to his destination. </p>
+<p>When routeChangeStart broadcasts event <code>AUTH_EVENTS.USER_AUTHENTICATION</code>, the original path will be sent along with the event. So I store it into LocationService.</p>
+<p>If authentication/authorization failed, then user will be simply redirected to login page.</p>
+<p>If not, <code>locationService.pathToTargetLocation();$route.reload();</code> will redirect the user to his destination.</p>
+<h3 id="Session_timeout">Session timeout</h3><p>Backend will check whether session has been timed out, whether session is from the same IP, whether session is from the same browser, etc, for each request.<br><img src="/img/bsm/code_008.png" alt="Alt text"></p>
+<p>If session is proved invalid, then response with 401 will be return, then an relogin dialog will be prompt to ask user to log in again to activate his session.</p>
+<p>Finally, you will see the welcome page.<br><img src="/img/bsm/login_002.png" alt="Alt text"></p>
+  
 	</div>
 		<footer class="article-footer clearfix">
 
@@ -160,7 +233,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Login_mechanism"><span class="toc-number">1.</span> <span class="toc-text">Login mechanism</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Authentication"><span class="toc-number">1.1.</span> <span class="toc-text">Authentication</span></a></li></ol></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Login_mechanism"><span class="toc-number">1.</span> <span class="toc-text">Login mechanism</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Authentication"><span class="toc-number">1.1.</span> <span class="toc-text">Authentication</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Login_module"><span class="toc-number">1.1.1.</span> <span class="toc-text">Login module</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Implement_authentication_in_the_backend"><span class="toc-number">1.1.2.</span> <span class="toc-text">Implement authentication in the backend</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Create_loginService_to_serve_for_user_login-"><span class="toc-number">1.1.3.</span> <span class="toc-text">Create loginService to serve for user login.</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Create_loginController_to_serve_for_user_login"><span class="toc-number">1.1.4.</span> <span class="toc-text">Create loginController to serve for user login</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Connect_the_loginController_with_login_page"><span class="toc-number">1.1.5.</span> <span class="toc-text">Connect the loginController with login page</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Authorization"><span class="toc-number">1.2.</span> <span class="toc-text">Authorization</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#User_information_and_User_preference"><span class="toc-number">1.3.</span> <span class="toc-text">User information and User preference</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Route_Control"><span class="toc-number">1.4.</span> <span class="toc-text">Route Control</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Session_timeout"><span class="toc-number">1.5.</span> <span class="toc-text">Session timeout</span></a></li></ol></li></ol>
   </div>
 
 <div id="asidepart">
