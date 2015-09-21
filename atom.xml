@@ -5,7 +5,7 @@
   <subtitle><![CDATA[Let every blog records your growth]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com//"/>
-  <updated>2015-08-15T16:02:27.000Z</updated>
+  <updated>2015-09-21T05:30:31.000Z</updated>
   <id>http://yoursite.com//</id>
   
   <author>
@@ -14,6 +14,78 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Deployment for DataSpeaker]]></title>
+    <link href="http://yoursite.com/2015/09/21/dataspeak-deployment/"/>
+    <id>http://yoursite.com/2015/09/21/dataspeak-deployment/</id>
+    <published>2015-09-21T05:14:42.000Z</published>
+    <updated>2015-09-21T05:30:31.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="Set_up_your_environment">Set up your environment</h2><ol>
+<li><p>Install Ruby on rails</p>
+</li>
+<li><p>Install Mongodb</p>
+</li>
+</ol>
+<h2 id="Prepare_weibo_account">Prepare  weibo account</h2><ol>
+<li><p>Access <a href="http://open.weibo.com/" target="_blank" rel="external">http://open.weibo.com/</a> with your weibo account</p>
+</li>
+<li><p>Register a web application with any name you want</p>
+</li>
+<li><p>Find out your server’s IP and set the callback url as <a href="http://server_IP:3000/dataspeaker/callback" target="_blank" rel="external">http://server_IP:3000/dataspeaker/callback</a></p>
+</li>
+<li><p>Write down the key and secret of the web application you have applied for</p>
+</li>
+<li><p>(non-mandatory)Register a new weibo account</p>
+</li>
+</ol>
+<ul>
+<li>only follow your weibo account</li>
+<li>Do the same things as step 2</li>
+</ul>
+<h2 id="Pull_the_code_from_github">Pull the code from github</h2><ol>
+<li>Git clone <a href="https://github.com/luke06122463/DataSpeaker.git" target="_blank" rel="external">https://github.com/luke06122463/DataSpeaker.git</a></li>
+</ol>
+<h2 id="Config_dataspeaker">Config dataspeaker</h2><ol>
+<li><p>Go to dataspeaker folder</p>
+</li>
+<li><p>Bundle update</p>
+</li>
+<li><p>Bundle install</p>
+</li>
+<li><p>Modify the configuration so that dataspeaker can be used with your account</p>
+</li>
+</ol>
+<ul>
+<li>Find the development.rb under dataspeaker\config\environments</li>
+<li>Replace the key, secret and callback url with your own setting</li>
+<li>Config the correct url for mongodb</li>
+</ul>
+<h2 id="Start_dataspeaker">Start dataspeaker</h2><ol>
+<li><p>Start Mongodb(in a new terminal)</p>
+</li>
+<li><p>Mongod –dbpath data/db</p>
+</li>
+</ol>
+<h2 id="Start_webrick">Start webrick</h2><ol>
+<li>Rails server</li>
+</ol>
+<h2 id="Visit_dataspeaker">Visit dataspeaker</h2><ol>
+<li><a href="http://server_IP:3000/dataspeaker" target="_blank" rel="external">http://server_IP:3000/dataspeaker</a></li>
+</ol>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="Set_up_your_environment">Set up your environment</h2><ol>
+<li><p>Install Ruby on rails</p>
+</li>
+<li><p>Install Mongodb</p>
+</li>
+</]]>
+    </summary>
+    
+      <category term="DataSpeaker" scheme="http://yoursite.com/categories/DataSpeaker/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[BSM Update - create new bookmark]]></title>

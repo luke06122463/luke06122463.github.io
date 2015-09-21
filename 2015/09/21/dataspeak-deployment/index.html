@@ -4,12 +4,21 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>Hex to unicode | BlackSheep</title>
+    <title>Deployment for DataSpeaker | BlackSheep</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="Luke06122463">
     
-    <meta name="description" content="Sometimes, we need to read data from old-fashioned devise. Unfortunately, many old-fashioned devise doesn’t support unicode very well. So we need to translate data from any format to unicode.">
+    <meta name="description" content="Set up your environment
+Install Ruby on rails
+
+Install Mongodb
+
+
+Prepare  weibo account
+Access http://open.weibo.com/ with your weibo account
+
+Registe">
     
     
     
@@ -67,15 +76,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/08/08/hex-to-unicode/" title="Hex to unicode" itemprop="url">Hex to unicode</a>
+      <a href="/2015/09/21/dataspeak-deployment/" title="Deployment for DataSpeaker" itemprop="url">Deployment for DataSpeaker</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://yoursite.com" title="Luke06122463">Luke06122463</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-08-07T16:27:05.000Z" itemprop="datePublished">2015-08-8</time>
-    更新日期:<time datetime="2015-08-07T16:49:10.000Z" itemprop="dateModified">2015-08-8</time>
+    <time datetime="2015-09-21T05:14:42.000Z" itemprop="datePublished">2015-09-21</time>
+    更新日期:<time datetime="2015-09-21T05:30:31.000Z" itemprop="dateModified">2015-09-21</time>
     
   </p>
 </header>
@@ -84,19 +93,61 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Set_up_your_environment"><span class="toc-number">1.</span> <span class="toc-text">Set up your environment</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Prepare_weibo_account"><span class="toc-number">2.</span> <span class="toc-text">Prepare  weibo account</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pull_the_code_from_github"><span class="toc-number">3.</span> <span class="toc-text">Pull the code from github</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Config_dataspeaker"><span class="toc-number">4.</span> <span class="toc-text">Config dataspeaker</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Start_dataspeaker"><span class="toc-number">5.</span> <span class="toc-text">Start dataspeaker</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Start_webrick"><span class="toc-number">6.</span> <span class="toc-text">Start webrick</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Visit_dataspeaker"><span class="toc-number">7.</span> <span class="toc-text">Visit dataspeaker</span></a></li></ol>
 		</div>
 		
-		<p>Sometimes, we need to read data from old-fashioned devise. Unfortunately, many old-fashioned devise doesn’t support unicode very well. So we need to translate data from any format to unicode.</p>
-<a id="more"></a>
-<p>Now things become clear that the string returned by ldap API is hex rather than Unicode. We need to format these string to utf-8 before taking any advantage of them.</p>
-<p>There are mainly two ways to use ldap result:</p>
-<ol>
-<li>show the ldap result on web client</li>
-<li>store the ldap result to elasticsearch</li>
+		<h2 id="Set_up_your_environment">Set up your environment</h2><ol>
+<li><p>Install Ruby on rails</p>
+</li>
+<li><p>Install Mongodb</p>
+</li>
 </ol>
-<p>I write a common function to finish the formatting work and here is its definition:<br><img src="/img/unicode_001.jpg" alt="Alt text"></p>
-<p>You can use the function to format every ldap result with the usage of <em>Format::String.format_json_to_unicode(source)</em></p>
+<h2 id="Prepare_weibo_account">Prepare  weibo account</h2><ol>
+<li><p>Access <a href="http://open.weibo.com/" target="_blank" rel="external">http://open.weibo.com/</a> with your weibo account</p>
+</li>
+<li><p>Register a web application with any name you want</p>
+</li>
+<li><p>Find out your server’s IP and set the callback url as <a href="http://server_IP:3000/dataspeaker/callback" target="_blank" rel="external">http://server_IP:3000/dataspeaker/callback</a></p>
+</li>
+<li><p>Write down the key and secret of the web application you have applied for</p>
+</li>
+<li><p>(non-mandatory)Register a new weibo account</p>
+</li>
+</ol>
+<ul>
+<li>only follow your weibo account</li>
+<li>Do the same things as step 2</li>
+</ul>
+<h2 id="Pull_the_code_from_github">Pull the code from github</h2><ol>
+<li>Git clone <a href="https://github.com/luke06122463/DataSpeaker.git" target="_blank" rel="external">https://github.com/luke06122463/DataSpeaker.git</a></li>
+</ol>
+<h2 id="Config_dataspeaker">Config dataspeaker</h2><ol>
+<li><p>Go to dataspeaker folder</p>
+</li>
+<li><p>Bundle update</p>
+</li>
+<li><p>Bundle install</p>
+</li>
+<li><p>Modify the configuration so that dataspeaker can be used with your account</p>
+</li>
+</ol>
+<ul>
+<li>Find the development.rb under dataspeaker\config\environments</li>
+<li>Replace the key, secret and callback url with your own setting</li>
+<li>Config the correct url for mongodb</li>
+</ul>
+<h2 id="Start_dataspeaker">Start dataspeaker</h2><ol>
+<li><p>Start Mongodb(in a new terminal)</p>
+</li>
+<li><p>Mongod –dbpath data/db</p>
+</li>
+</ol>
+<h2 id="Start_webrick">Start webrick</h2><ol>
+<li>Rails server</li>
+</ol>
+<h2 id="Visit_dataspeaker">Visit dataspeaker</h2><ol>
+<li><a href="http://server_IP:3000/dataspeaker" target="_blank" rel="external">http://server_IP:3000/dataspeaker</a></li>
+</ol>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -104,14 +155,14 @@
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/RubyOnRails/">RubyOnRails</a>
+  <a class="article-category-link" href="/categories/DataSpeaker/">DataSpeaker</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://yoursite.com/2015/08/08/hex-to-unicode/" data-title="Hex to unicode | BlackSheep" data-tsina="null" class="share clearfix">
+  <div data-url="http://yoursite.com/2015/09/21/dataspeak-deployment/" data-title="Deployment for DataSpeaker | BlackSheep" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -120,19 +171,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2015/08/13/bsm-introduction/" title="BSM introduction">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  BSM introduction</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2015/08/08/nginx-sub-domain/"  title="nginx sub-domain">
+<a href="/2015/08/15/bookmark-creation-for-bsm/"  title="BSM Update - create new bookmark">
  <strong>NEXT:</strong><br/> 
- <span>nginx sub-domain
+ <span>BSM Update - create new bookmark
 </span>
 </a>
 </div>
@@ -145,7 +188,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Set_up_your_environment"><span class="toc-number">1.</span> <span class="toc-text">Set up your environment</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Prepare_weibo_account"><span class="toc-number">2.</span> <span class="toc-text">Prepare  weibo account</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pull_the_code_from_github"><span class="toc-number">3.</span> <span class="toc-text">Pull the code from github</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Config_dataspeaker"><span class="toc-number">4.</span> <span class="toc-text">Config dataspeaker</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Start_dataspeaker"><span class="toc-number">5.</span> <span class="toc-text">Start dataspeaker</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Start_webrick"><span class="toc-number">6.</span> <span class="toc-text">Start webrick</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Visit_dataspeaker"><span class="toc-number">7.</span> <span class="toc-text">Visit dataspeaker</span></a></li></ol>
   </div>
 
 <div id="asidepart">
