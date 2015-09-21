@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2015/09/21/dataspeak-user-guide/</loc>
+    <lastmod>2015-09-21T06:09:10.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2015/09/21/dataspeak-deployment/</loc>
     <lastmod>2015-09-21T05:30:31.000Z</lastmod>
   </url>

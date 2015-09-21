@@ -5,7 +5,7 @@
   <subtitle><![CDATA[Let every blog records your growth]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com//"/>
-  <updated>2015-09-21T05:30:31.000Z</updated>
+  <updated>2015-09-21T06:09:10.000Z</updated>
   <id>http://yoursite.com//</id>
   
   <author>
@@ -14,6 +14,55 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[User Guide for DataSpeaker]]></title>
+    <link href="http://yoursite.com/2015/09/21/dataspeak-user-guide/"/>
+    <id>http://yoursite.com/2015/09/21/dataspeak-user-guide/</id>
+    <published>2015-09-21T05:52:27.000Z</published>
+    <updated>2015-09-21T06:09:10.000Z</updated>
+    <content type="html"><![CDATA[<ol>
+<li><p>Access dataspeaker with <a href="http://server_IP:3000/dataspeaker" target="_blank" rel="external">http://server_IP:3000/dataspeaker</a></p>
+<blockquote>
+<p>Since user hasn’t logged in, he will be redirected to login page no matter what kind of page he is tring to visit.<br><img src="/img/dataspeaker/login.png" alt="Alt text"></p>
+</blockquote>
+</li>
+<li><p>Click the <code>weibo account</code> button</p>
+<blockquote>
+<p>User will be redirected to weibo’s authentication page<br><img src="/img/dataspeaker/authentication.png" alt="Alt text"></p>
+</blockquote>
+</li>
+<li><p>Finish the authentication page with your own weibo account</p>
+<blockquote>
+<p>It will return user’s access token. (In the later version, user will be redirected to dashboard automatically)<br><img src="/img/dataspeaker/callback.png" alt="Alt text"></p>
+</blockquote>
+</li>
+<li><p>Access dataspeaker with <a href="http://server_IP:3000/dataspeaker" target="_blank" rel="external">http://server_IP:3000/dataspeaker</a> again</p>
+<blockquote>
+<p>Now user has passed weibo’s authentication and dataspeaker will display the dashboard for user.<br><img src="/img/dataspeaker/dashboard_unanalyzed.png" alt="Alt text"></p>
+</blockquote>
+</li>
+<li><p>Trigger a task to collect and analyze data by click the <code>here</code> hyperlink</p>
+<blockquote>
+<p>New user needs to trigger the data analysis by himself.</p>
+</blockquote>
+</li>
+<li><p>When user clicks the <code>here</code> hyperlink, an dialog will be popped up<br><img src="/img/dataspeaker/dashboard_trigger_analysis.png" alt="Alt text"></p>
+</li>
+<li><p>User needs to wait about 30s and refresh the page<br><img src="/img/dataspeaker/dashboard_part1.png" alt="Alt text"><br><img src="/img/dataspeaker/dashboard_part2.png" alt="Alt text"><br><img src="/img/dataspeaker/dashboard_part3.png" alt="Alt text"></p>
+</li>
+<li><p>With some tricky workaround, user also can see the analysis for their statuses<br><img src="/img/dataspeaker/dashboard_part4.png" alt="Alt text"><br><img src="/img/dataspeaker/dashboard_part5.png" alt="Alt text"></p>
+</li>
+</ol>
+]]></content>
+    <summary type="html">
+    <![CDATA[<ol>
+<li><p>Access dataspeaker with <a href="http://server_IP:3000/dataspeaker" target="_blank" rel="external">http://server_IP:3000/dataspe]]>
+    </summary>
+    
+      <category term="DataSpeaker" scheme="http://yoursite.com/categories/DataSpeaker/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[Deployment for DataSpeaker]]></title>
