@@ -5,7 +5,7 @@
   <subtitle><![CDATA[Let every blog records your growth]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com//"/>
-  <updated>2015-09-21T07:40:49.000Z</updated>
+  <updated>2015-09-21T08:47:54.000Z</updated>
   <id>http://yoursite.com//</id>
   
   <author>
@@ -14,6 +14,45 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[Issue List for DataSpeaker]]></title>
+    <link href="http://yoursite.com/2015/09/21/dataspeaker-issue/"/>
+    <id>http://yoursite.com/2015/09/21/dataspeaker-issue/</id>
+    <published>2015-09-21T08:43:22.000Z</published>
+    <updated>2015-09-21T08:47:54.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="Accout_setting">Accout setting</h2><p>Make sure you have properly set your account for open.weibo.com</p>
+<ul>
+<li>Be careful about the setting of callback url</li>
+</ul>
+<h2 id="Limitation_for_friends">Limitation for friends</h2><p>Weibo doesn’t allow user to retrieve  any personal information back except himself and the one who has authorized himself to DataSpeaker. Which means DataSpeaker can’t collect the personal information for user’s followers and friends.</p>
+<ul>
+<li>The good news is if we use weibo’s official SDK to interact with weibo API server, it will return 30% of  the result. For example, we ask API server for 100 records, then API server will return 30 records if we use its official SDK.</li>
+<li>The bad news is we will lose some data even if we keep fetching the personal information for user’s friends and followers until there is no new records return.</li>
+</ul>
+<blockquote>
+<p>For example,  the total amount of my friends is 257 and finally I got the personal information for 240 friends</p>
+</blockquote>
+<h2 id="Limitation_for_statuses">Limitation for statuses</h2><p>Weibo only allows user to retrieve his latest 5 statuses back. Without the data of statuses, we can’t do analysis for statuses.</p>
+<p>Here is tricky workaround to get user’s statuses. Since its process is rather complicated, DataSpeaker doesn’t expose this functionality to users.</p>
+<ul>
+<li><code>home_timeline</code> will return the statuses of user and his friends and there is no limitation on this API</li>
+<li>We need to create a brand new weibo account and only follow current user. Now current user is the only friend for the new one</li>
+<li>create a new web application on open.weibo.com  for the new one and run DataSpeaker with the new one’s account (key+secret)</li>
+<li>Use <code>home_timeline</code> to retrieve the statuses back for the new one and his friends. Since the new one doesn’t have any statuses and current user is his only friend, the statuses returned by <code>home_timeline</code> are all belonging to current user</li>
+<li>Switch to current user and do analysis for his statuses</li>
+</ul>
+<p>The limitation for the workaround is that only the statuses posted after 2013 will be returned which means we will miss a lot of statuses. </p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="Accout_setting">Accout setting</h2><p>Make sure you have properly set your account for open.weibo.com</p>
+<ul>
+<li>Be careful about ]]>
+    </summary>
+    
+      <category term="DataSpeaker" scheme="http://yoursite.com/categories/DataSpeaker/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[User Guide for DataSpeaker]]></title>
