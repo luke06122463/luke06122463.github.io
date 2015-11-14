@@ -2,23 +2,43 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2015/11/14/BMSearch-Deployment/</loc>
+    <lastmod>2015-11-14T08:51:41.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2015/08/08/nginx-sub-domain/</loc>
+    <lastmod>2015-11-14T08:51:30.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2015/09/21/dataspeaker-issue/</loc>
-    <lastmod>2015-09-21T08:47:54.000Z</lastmod>
+    <lastmod>2015-11-14T08:51:22.000Z</lastmod>
   </url>
   
   <url>
     <loc>http://yoursite.com/2015/09/21/dataspeak-user-guide/</loc>
-    <lastmod>2015-09-21T07:40:49.000Z</lastmod>
+    <lastmod>2015-11-14T08:51:11.000Z</lastmod>
   </url>
   
   <url>
     <loc>http://yoursite.com/2015/09/21/dataspeak-deployment/</loc>
-    <lastmod>2015-09-21T05:30:31.000Z</lastmod>
+    <lastmod>2015-11-14T08:51:00.000Z</lastmod>
   </url>
   
   <url>
     <loc>http://yoursite.com/2015/08/15/login-module-for-bsm/</loc>
-    <lastmod>2015-08-16T15:56:46.000Z</lastmod>
+    <lastmod>2015-11-14T08:49:57.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2015/08/15/bookmark-creation-for-bsm/</loc>
+    <lastmod>2015-11-14T08:49:38.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2015/08/13/bsm-introduction/</loc>
+    <lastmod>2015-11-14T08:36:45.000Z</lastmod>
   </url>
   
   <url>
@@ -27,23 +47,8 @@
   </url>
   
   <url>
-    <loc>http://yoursite.com/2015/08/13/bsm-introduction/</loc>
-    <lastmod>2015-08-15T16:02:59.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/2015/08/15/bookmark-creation-for-bsm/</loc>
-    <lastmod>2015-08-15T16:02:27.000Z</lastmod>
-  </url>
-  
-  <url>
     <loc>http://yoursite.com/2015/08/08/hex-to-unicode/</loc>
     <lastmod>2015-08-07T16:49:10.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/2015/08/08/nginx-sub-domain/</loc>
-    <lastmod>2015-08-07T16:48:48.000Z</lastmod>
   </url>
   
   <url>

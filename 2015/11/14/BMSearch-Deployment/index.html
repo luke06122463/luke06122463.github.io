@@ -4,16 +4,15 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>DataSpeaker Issue List | BlackSheep</title>
+    <title>BMSearch Deployment | BlackSheep</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="Luke06122463">
     
-    <meta name="description" content="Accout settingMake sure you have properly set your account for open.weibo.com
+    <meta name="description" content="Deployment for Development Environment
+Start webrick for Ruby Servicerails server
 
-Be careful about the setting of callback url
-
-Limitation for friendsWei">
+Start mongodb (dbpath can be ingored if you adopt the default setti">
     
     
     
@@ -71,15 +70,15 @@ Limitation for friendsWei">
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/09/21/dataspeaker-issue/" title="DataSpeaker Issue List" itemprop="url">DataSpeaker Issue List</a>
+      <a href="/2015/11/14/BMSearch-Deployment/" title="BMSearch Deployment" itemprop="url">BMSearch Deployment</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://yoursite.com" title="Luke06122463">Luke06122463</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-09-21T08:43:22.000Z" itemprop="datePublished">2015-09-21</time>
-    更新日期:<time datetime="2015-11-14T08:51:22.000Z" itemprop="dateModified">2015-11-14</time>
+    <time datetime="2015-11-14T08:33:48.000Z" itemprop="datePublished">2015-11-14</time>
+    更新日期:<time datetime="2015-11-14T08:51:41.000Z" itemprop="dateModified">2015-11-14</time>
     
   </p>
 </header>
@@ -88,31 +87,23 @@ Limitation for friendsWei">
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Accout_setting"><span class="toc-number">1.</span> <span class="toc-text">Accout setting</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Limitation_for_friends"><span class="toc-number">2.</span> <span class="toc-text">Limitation for friends</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Limitation_for_statuses"><span class="toc-number">3.</span> <span class="toc-text">Limitation for statuses</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Deployment_for_Development_Environment"><span class="toc-number">1.</span> <span class="toc-text">Deployment for Development Environment</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Configuration_for_Development_Environment"><span class="toc-number">2.</span> <span class="toc-text">Configuration for Development Environment</span></a></li></ol>
 		</div>
 		
-		<h2 id="Accout_setting">Accout setting</h2><p>Make sure you have properly set your account for open.weibo.com</p>
-<ul>
-<li>Be careful about the setting of callback url</li>
+		<h2 id="Deployment_for_Development_Environment">Deployment for Development Environment</h2><ul>
+<li><p>Start webrick for Ruby Service<br><code>rails server</code></p>
+</li>
+<li><p>Start mongodb (dbpath can be ingored if you adopt the default setting)<br><code>mongod --dbpath data/db</code></p>
+</li>
+<li><p>Start mongodb GUI (better experince to manage your mongodb)<br><code>cd YOUR_PATH/node_module/mongodb_express &amp;&amp; node app.js</code></p>
+</li>
 </ul>
-<h2 id="Limitation_for_friends">Limitation for friends</h2><p>Weibo doesn’t allow user to retrieve  any personal information back except himself and the one who has authorized himself to DataSpeaker. Which means DataSpeaker can’t collect the personal information for user’s followers and friends.</p>
-<ul>
-<li>The good news is if we use weibo’s official SDK to interact with weibo API server, it will return 30% of  the result. For example, we ask API server for 100 records, then API server will return 30 records if we use its official SDK.</li>
-<li>The bad news is we will lose some data even if we keep fetching the personal information for user’s friends and followers until there is no new records return.</li>
+<h2 id="Configuration_for_Development_Environment">Configuration for Development Environment</h2><ul>
+<li><p>Config db connection for BPSearch on ruby side</p>
+</li>
+<li><p>Config mongodb GUI</p>
+</li>
 </ul>
-<blockquote>
-<p>For example,  the total amount of my friends is 257 and finally I got the personal information for 240 friends</p>
-</blockquote>
-<h2 id="Limitation_for_statuses">Limitation for statuses</h2><p>Weibo only allows user to retrieve his latest 5 statuses back. Without the data of statuses, we can’t do analysis for statuses.</p>
-<p>Here is tricky workaround to get user’s statuses. Since its process is rather complicated, DataSpeaker doesn’t expose this functionality to users.</p>
-<ul>
-<li><code>home_timeline</code> will return the statuses of user and his friends and there is no limitation on this API</li>
-<li>We need to create a brand new weibo account and only follow current user. Now current user is the only friend for the new one</li>
-<li>create a new web application on open.weibo.com  for the new one and run DataSpeaker with the new one’s account (key+secret)</li>
-<li>Use <code>home_timeline</code> to retrieve the statuses back for the new one and his friends. Since the new one doesn’t have any statuses and current user is his only friend, the statuses returned by <code>home_timeline</code> are all belonging to current user</li>
-<li>Switch to current user and do analysis for his statuses</li>
-</ul>
-<p>The limitation for the workaround is that only the statuses posted after 2013 will be returned which means we will miss a lot of statuses. </p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -120,14 +111,14 @@ Limitation for friendsWei">
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/DataSpeaker/">DataSpeaker</a>
+  <a class="article-category-link" href="/categories/Bookmark-Search/">Bookmark Search</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://yoursite.com/2015/09/21/dataspeaker-issue/" data-title="DataSpeaker Issue List | BlackSheep" data-tsina="null" class="share clearfix">
+  <div data-url="http://yoursite.com/2015/11/14/BMSearch-Deployment/" data-title="BMSearch Deployment | BlackSheep" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -136,19 +127,11 @@ Limitation for friendsWei">
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2015/11/14/BMSearch-Deployment/" title="BMSearch Deployment">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  BMSearch Deployment</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2015/09/21/dataspeak-user-guide/"  title="DataSpeaker User Guide">
+<a href="/2015/09/21/dataspeaker-issue/"  title="DataSpeaker Issue List">
  <strong>NEXT:</strong><br/> 
- <span>DataSpeaker User Guide
+ <span>DataSpeaker Issue List
 </span>
 </a>
 </div>
@@ -161,7 +144,7 @@ Limitation for friendsWei">
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Accout_setting"><span class="toc-number">1.</span> <span class="toc-text">Accout setting</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Limitation_for_friends"><span class="toc-number">2.</span> <span class="toc-text">Limitation for friends</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Limitation_for_statuses"><span class="toc-number">3.</span> <span class="toc-text">Limitation for statuses</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Deployment_for_Development_Environment"><span class="toc-number">1.</span> <span class="toc-text">Deployment for Development Environment</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Configuration_for_Development_Environment"><span class="toc-number">2.</span> <span class="toc-text">Configuration for Development Environment</span></a></li></ol>
   </div>
 
 <div id="asidepart">
