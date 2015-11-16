@@ -5,7 +5,7 @@
   <subtitle><![CDATA[Let every blog records your growth]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yoursite.com//"/>
-  <updated>2015-11-14T08:51:41.000Z</updated>
+  <updated>2015-11-16T15:54:11.000Z</updated>
   <id>http://yoursite.com//</id>
   
   <author>
@@ -16,23 +16,95 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[Bundle exec rails usage]]></title>
+    <link href="http://yoursite.com/2015/11/16/RubyOnRails-bundle-exec-raisl-usage/"/>
+    <id>http://yoursite.com/2015/11/16/RubyOnRails-bundle-exec-raisl-usage/</id>
+    <published>2015-11-16T15:52:44.000Z</published>
+    <updated>2015-11-16T15:54:11.000Z</updated>
+    <content type="html"><![CDATA[<ul>
+<li>bundle exec rails c</li>
+</ul>
+]]></content>
+    <summary type="html">
+    <![CDATA[<ul>
+<li>bundle exec rails c</li>
+</ul>
+]]>
+    </summary>
+    
+      <category term="RubyOnRails" scheme="http://yoursite.com/categories/RubyOnRails/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[BMSearch Data Dictionary]]></title>
+    <link href="http://yoursite.com/2015/11/16/BMSearch-Data-Dictionary/"/>
+    <id>http://yoursite.com/2015/11/16/BMSearch-Data-Dictionary/</id>
+    <published>2015-11-16T15:50:11.000Z</published>
+    <updated>2015-11-16T15:54:15.000Z</updated>
+    <content type="html"><![CDATA[<p>You can find the data dictionary from <a href="https://docs.google.com/document/d/1szoymGnFAM2XeC_McHD6qlg_Tv6rsIvY20-MN-em7x8/edit?usp=sharing" target="_blank" rel="external">here</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>You can find the data dictionary from <a href="https://docs.google.com/document/d/1szoymGnFAM2XeC_McHD6qlg_Tv6rsIvY20-MN-em7x8/edit?usp=s]]>
+    </summary>
+    
+      <category term="Bookmark Search" scheme="http://yoursite.com/categories/Bookmark-Search/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[BMSearch mongo_mapper usage]]></title>
+    <link href="http://yoursite.com/2015/11/16/mongo-mapper-usage/"/>
+    <id>http://yoursite.com/2015/11/16/mongo-mapper-usage/</id>
+    <published>2015-11-16T15:43:58.000Z</published>
+    <updated>2015-11-16T15:54:21.000Z</updated>
+    <content type="html"><![CDATA[<p><a href="http://mongomapper.com/documentation/getting-started/rails.html" target="_blank" rel="external">reference</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><a href="http://mongomapper.com/documentation/getting-started/rails.html" target="_blank" rel="external">reference</a></p>
+]]>
+    </summary>
+    
+      <category term="Bookmark Search" scheme="http://yoursite.com/categories/Bookmark-Search/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[What kind of ORM for MongoDB]]></title>
+    <link href="http://yoursite.com/2015/11/16/What-kind-of-ORM-for-MongoDB/"/>
+    <id>http://yoursite.com/2015/11/16/What-kind-of-ORM-for-MongoDB/</id>
+    <published>2015-11-16T15:35:42.000Z</published>
+    <updated>2015-11-16T15:41:52.000Z</updated>
+    <content type="html"><![CDATA[<h2 id="Active_Record">Active Record</h2><p>Active Record may not be a good choice. It is customized for traditional DB schema rather than no-sql DB</p>
+<h2 id="Active_Model">Active Model</h2><p>Active Model is a complement for Active Record.</p>
+<h2 id="Mongo_Mapper_&amp;_MongoId">Mongo Mapper &amp; MongoId</h2><p>A good choice</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="Active_Record">Active Record</h2><p>Active Record may not be a good choice. It is customized for traditional DB schema rather than n]]>
+    </summary>
+    
+      <category term="RubyOnRails" scheme="http://yoursite.com/categories/RubyOnRails/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[BMSearch Deployment]]></title>
     <link href="http://yoursite.com/2015/11/14/BMSearch-Deployment/"/>
     <id>http://yoursite.com/2015/11/14/BMSearch-Deployment/</id>
     <published>2015-11-14T08:33:48.000Z</published>
-    <updated>2015-11-14T08:51:41.000Z</updated>
+    <updated>2015-11-16T15:31:19.000Z</updated>
     <content type="html"><![CDATA[<h2 id="Deployment_for_Development_Environment">Deployment for Development Environment</h2><ul>
 <li><p>Start webrick for Ruby Service<br><code>rails server</code></p>
 </li>
 <li><p>Start mongodb (dbpath can be ingored if you adopt the default setting)<br><code>mongod --dbpath data/db</code></p>
 </li>
-<li><p>Start mongodb GUI (better experince to manage your mongodb)<br><code>cd YOUR_PATH/node_module/mongodb_express &amp;&amp; node app.js</code></p>
+<li><p>Start mongodb GUI (better experince to manage your mongodb)<br><code>cd YOUR_PATH/node_module/mongodb_express &amp;&amp; node app.js</code><br>Login Account<br><code>admin - pass</code></p>
 </li>
 </ul>
 <h2 id="Configuration_for_Development_Environment">Configuration for Development Environment</h2><ul>
 <li><p>Config db connection for BPSearch on ruby side</p>
 </li>
-<li><p>Config mongodb GUI</p>
+<li><p>Config mongodb GUI<br>You can find more frome <a href="https://github.com/andzdroid/mongo-express" target="_blank" rel="external">here</a></p>
 </li>
 </ul>
 ]]></content>

@@ -2,8 +2,28 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2015/11/16/mongo-mapper-usage/</loc>
+    <lastmod>2015-11-16T15:54:21.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2015/11/16/BMSearch-Data-Dictionary/</loc>
+    <lastmod>2015-11-16T15:54:15.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2015/11/16/RubyOnRails-bundle-exec-raisl-usage/</loc>
+    <lastmod>2015-11-16T15:54:11.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2015/11/16/What-kind-of-ORM-for-MongoDB/</loc>
+    <lastmod>2015-11-16T15:41:52.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2015/11/14/BMSearch-Deployment/</loc>
-    <lastmod>2015-11-14T08:51:41.000Z</lastmod>
+    <lastmod>2015-11-16T15:31:19.000Z</lastmod>
   </url>
   
   <url>

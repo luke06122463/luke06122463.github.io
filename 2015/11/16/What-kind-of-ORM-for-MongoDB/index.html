@@ -4,12 +4,13 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>Nginx sub-domain | BlackSheep</title>
+    <title>What kind of ORM for MongoDB | BlackSheep</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="Luke06122463">
     
-    <meta name="description" content="In order to make the search web and admin search share the same root url (https://localhost) and distinguish each by sub domain(/admin and /search res">
+    <meta name="description" content="Active RecordActive Record may not be a good choice. It is customized for traditional DB schema rather than no-sql DB
+Active ModelActive Model is a co">
     
     
     
@@ -67,15 +68,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/08/08/nginx-sub-domain/" title="Nginx sub-domain" itemprop="url">Nginx sub-domain</a>
+      <a href="/2015/11/16/What-kind-of-ORM-for-MongoDB/" title="What kind of ORM for MongoDB" itemprop="url">What kind of ORM for MongoDB</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://yoursite.com" title="Luke06122463">Luke06122463</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-08-07T16:25:32.000Z" itemprop="datePublished">2015-08-8</time>
-    更新日期:<time datetime="2015-11-14T08:51:30.000Z" itemprop="dateModified">2015-11-14</time>
+    <time datetime="2015-11-16T15:35:42.000Z" itemprop="datePublished">2015-11-16</time>
+    更新日期:<time datetime="2015-11-16T15:41:52.000Z" itemprop="dateModified">2015-11-16</time>
     
   </p>
 </header>
@@ -84,48 +85,12 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Here_is_the_resource_category:"><span class="toc-number">1.</span> <span class="toc-text">Here is the resource category:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#As_to_1-a_(style_sheets)_and_1-b_(javascript_files)"><span class="toc-number">1.1.</span> <span class="toc-text">As to 1-a (style sheets) and 1-b (javascript files)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#As_to_1-c_(Image_on_the_html)_and_2-a_(url_on_html)"><span class="toc-number">1.2.</span> <span class="toc-text">As to 1-c (Image on the html) and 2-a (url on html)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#As_to_1-d_(Image_in_css)"><span class="toc-number">1.3.</span> <span class="toc-text">As to 1-d (Image in css)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#As_to_1-e(Image_inserted_into_html_by_js)_and_2-b_(url_in_js)"><span class="toc-number">1.4.</span> <span class="toc-text">As to 1-e(Image inserted into html by js) and 2-b (url in js)</span></a></li></ol></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Active_Record"><span class="toc-number">1.</span> <span class="toc-text">Active Record</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Active_Model"><span class="toc-number">2.</span> <span class="toc-text">Active Model</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Mongo_Mapper_&_MongoId"><span class="toc-number">3.</span> <span class="toc-text">Mongo Mapper & MongoId</span></a></li></ol>
 		</div>
 		
-		<p>In order to make the search web and admin search share the same root url (<a href="https://localhost" target="_blank" rel="external">https://localhost</a>) and distinguish each by sub domain(/admin and /search respectively), we need to modify most URL in our project since currently we use absolute path to visit resource.</p>
-<p>When we configure nginx to support it, we need to change the way of how we request resource. </p>
-<p>For example, currently we access an image with the url of “<a href="https://localhost:3000/assets/image01.jpg”" target="_blank" rel="external">https://localhost:3000/assets/image01.jpg”</a>. But after we turn on nginx’s sub domain functionality, we need to change the way to “<a href="https://localhost/admin/assets/image01.jpg”" target="_blank" rel="external">https://localhost/admin/assets/image01.jpg”</a>  </p>
-<p>Actually, we need to change all the url on our web pages. </p>
-<h2 id="Here_is_the_resource_category:">Here is the resource category:</h2><ol>
-<li>Assets<br>1-a. Style sheets<br>1-b. Javascript files<br>1-c. Image on the html<br>1-d. Image in css<br>1-e. Image inserted into html by js</li>
-</ol>
-<ol>
-<li>Request url<br> 2-a. url on html (hyper link &amp; form)<br> 2-b. url in js (such as ajax url)</li>
-</ol>
-<p>With some investigation, we found we can take advantage of Rails tag to solve the problem.</p>
-<p>When we set  <em>config.relative_url_root = “/admin”</em>  in application.rb, then Rails will prepend  <em>“/admin”</em>  when generating links. So we need to use rails tag in our project as more as possible.</p>
-<h3 id="As_to_1-a_(style_sheets)_and_1-b_(javascript_files)">As to 1-a (style sheets) and 1-b (javascript files)</h3><p>I use rails tag ‘javascript_include_tag’ and ‘stylesheet_link_tag’ to request css &amp; js resource.</p>
-<p>Before:<br><img src="/img/nginx_001.jpg" alt="Alt text"></p>
-<p>After:<br><img src="/img/nginx_002.jpg" alt="Alt text"></p>
-<p>Now 1-a (style sheets) and 1-b (javascript files) can be requested in sub-domain mode.</p>
-<h3 id="As_to_1-c_(Image_on_the_html)_and_2-a_(url_on_html)">As to 1-c (Image on the html) and 2-a (url on html)</h3><p>There are two ways to introduce them into html.</p>
-<p>One way is  creating them with rails tag, such as image_path. Since the url is created by rails tag, then it should work well in sub-domain mode. Just leave it alone.</p>
-<p>The other way is the url is specified by developer. The url can be relative-path and it also can be absolute-path.</p>
-<ol>
-<li>If it is relative-path, then it would work well in sub-domain mode.</li>
-<li>If it is absolute-path, then we need to prepend the sub-domain for the url. Fortunately, we can get the sub-domian  from  <em>config.relative_url_root</em> and what we need to do is only adding the <em>relative_url_root</em> before the url.</li>
-</ol>
-<p>I store <em>relative_url_root</em> into the variable <em>@root_url</em>.<br><img src="/img/nginx_003.jpg" alt="Alt text"></p>
-<p>So if you request an image in html with the following way:<br><img src="/img/nginx_004.jpg" alt="Alt text"><br>Now you need to change it to:<br><img src="/img/nginx_005.jpg" alt="Alt text"></p>
-<h3 id="As_to_1-d_(Image_in_css)">As to 1-d (Image in css)</h3><p>We can use relative-path to access image</p>
-<p>Before:<br><img src="/img/nginx_006.jpg" alt="Alt text"></p>
-<p>After:<br><img src="/img/nginx_007.jpg" alt="Alt text"></p>
-<h3 id="As_to_1-e(Image_inserted_into_html_by_js)_and_2-b_(url_in_js)">As to 1-e(Image inserted into html by js) and 2-b (url in js)</h3><p>The url must be specified by developer. So,</p>
-<ol>
-<li>If it is relative-path, then it would work well in sub-domain mode.</li>
-<li>If it is absolute-path, then we need to prepend the sub-domain for the url.</li>
-</ol>
-<p>There is a global js variable <em>global_root_url</em> which represent the <em>relative_url_root</em></p>
-<p>So if you specify url in js with the following way:<br><img src="/img/nginx_008.jpg" alt="Alt text"></p>
-<p>Then you need to change it to:<br><img src="/img/nginx_009.jpg" alt="Alt text"></p>
-<p>Besides, when we use redirect_to to redirect user to some page, then we also need to specify the sub domain for url.<br>Before:<br><img src="/img/nginx_010.jpg" alt="Alt text"><br>After:<br><img src="/img/nginx_011.jpg" alt="Alt text"></p>
-<p>Actually, if we don’t set <em>config.relative_url_root</em>, then both <em>@root_url</em>  and <em>global_root_url</em> are empty string.</p>
-<p>I have tested it in my environment and it works well both in development and production mode.</p>
+		<h2 id="Active_Record">Active Record</h2><p>Active Record may not be a good choice. It is customized for traditional DB schema rather than no-sql DB</p>
+<h2 id="Active_Model">Active Model</h2><p>Active Model is a complement for Active Record.</p>
+<h2 id="Mongo_Mapper_&amp;_MongoId">Mongo Mapper &amp; MongoId</h2><p>A good choice</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -140,7 +105,7 @@
 
 <div class="article-share" id="share">
 
-  <div data-url="http://yoursite.com/2015/08/08/nginx-sub-domain/" data-title="Nginx sub-domain | BlackSheep" data-tsina="null" class="share clearfix">
+  <div data-url="http://yoursite.com/2015/11/16/What-kind-of-ORM-for-MongoDB/" data-title="What kind of ORM for MongoDB | BlackSheep" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -150,18 +115,18 @@
 <nav class="article-nav clearfix">
  
  <div class="prev" >
- <a href="/2015/08/08/hex-to-unicode/" title="Hex to unicode">
+ <a href="/2015/11/16/mongo-mapper-usage/" title="BMSearch mongo_mapper usage">
   <strong>PREVIOUS:</strong><br/>
   <span>
-  Hex to unicode</span>
+  BMSearch mongo_mapper usage</span>
 </a>
 </div>
 
 
 <div class="next">
-<a href="/2015/08/06/Python的类机制/"  title="Python的类机制">
+<a href="/2015/11/14/BMSearch-Deployment/"  title="BMSearch Deployment">
  <strong>NEXT:</strong><br/> 
- <span>Python的类机制
+ <span>BMSearch Deployment
 </span>
 </a>
 </div>
@@ -174,7 +139,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Here_is_the_resource_category:"><span class="toc-number">1.</span> <span class="toc-text">Here is the resource category:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#As_to_1-a_(style_sheets)_and_1-b_(javascript_files)"><span class="toc-number">1.1.</span> <span class="toc-text">As to 1-a (style sheets) and 1-b (javascript files)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#As_to_1-c_(Image_on_the_html)_and_2-a_(url_on_html)"><span class="toc-number">1.2.</span> <span class="toc-text">As to 1-c (Image on the html) and 2-a (url on html)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#As_to_1-d_(Image_in_css)"><span class="toc-number">1.3.</span> <span class="toc-text">As to 1-d (Image in css)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#As_to_1-e(Image_inserted_into_html_by_js)_and_2-b_(url_in_js)"><span class="toc-number">1.4.</span> <span class="toc-text">As to 1-e(Image inserted into html by js) and 2-b (url in js)</span></a></li></ol></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Active_Record"><span class="toc-number">1.</span> <span class="toc-text">Active Record</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Active_Model"><span class="toc-number">2.</span> <span class="toc-text">Active Model</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Mongo_Mapper_&_MongoId"><span class="toc-number">3.</span> <span class="toc-text">Mongo Mapper & MongoId</span></a></li></ol>
   </div>
 
 <div id="asidepart">
